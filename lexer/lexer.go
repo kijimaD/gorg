@@ -21,13 +21,15 @@ func New(input string) *Lexer {
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
-	l.skipWhitespace()
+	// l.skipWhitespace()
 
 	switch l.ch {
-	case '\n':
-		tok = newToken(token.NEWLINE, l.ch)
 	case '*':
 		tok = newToken(token.ASTERISK, l.ch)
+	case ' ':
+		tok = newToken(token.SPACE, l.ch)
+	case '\n':
+		tok = newToken(token.NEWLINE, l.ch)
 	default:
 		tok.Type = token.CONTENT
 		tok.Literal = l.readString()

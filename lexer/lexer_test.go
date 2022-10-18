@@ -11,9 +11,9 @@ func TestNextToken(t *testing.T) {
 * h1
 content
 ** h2
-foo
 *** h3
-bar
+**** h4
+***** h5
 **invalid
 `
 
@@ -23,23 +23,43 @@ bar
 	}{
 		{token.NEWLINE, "\n"},
 		{token.ASTERISK, "*"},
+		{token.SPACE, " "},
 		{token.CONTENT, "h1"},
 		{token.NEWLINE, "\n"},
+
 		{token.CONTENT, "content"},
 		{token.NEWLINE, "\n"},
+
 		{token.ASTERISK, "*"},
 		{token.ASTERISK, "*"},
+		{token.SPACE, " "},
 		{token.CONTENT, "h2"},
 		{token.NEWLINE, "\n"},
-		{token.CONTENT, "foo"},
-		{token.NEWLINE, "\n"},
+
 		{token.ASTERISK, "*"},
 		{token.ASTERISK, "*"},
 		{token.ASTERISK, "*"},
+		{token.SPACE, " "},
 		{token.CONTENT, "h3"},
 		{token.NEWLINE, "\n"},
-		{token.CONTENT, "bar"},
+
+		{token.ASTERISK, "*"},
+		{token.ASTERISK, "*"},
+		{token.ASTERISK, "*"},
+		{token.ASTERISK, "*"},
+		{token.SPACE, " "},
+		{token.CONTENT, "h4"},
 		{token.NEWLINE, "\n"},
+
+		{token.ASTERISK, "*"},
+		{token.ASTERISK, "*"},
+		{token.ASTERISK, "*"},
+		{token.ASTERISK, "*"},
+		{token.ASTERISK, "*"},
+		{token.SPACE, " "},
+		{token.CONTENT, "h5"},
+		{token.NEWLINE, "\n"},
+
 		{token.ASTERISK, "*"},
 		{token.ASTERISK, "*"},
 		{token.CONTENT, "invalid"},

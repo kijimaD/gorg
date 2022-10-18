@@ -10,6 +10,7 @@ type Token struct {
 
 const (
 	ASTERISK = "*"
-	NEWLINE  = "NL"
+	NEWLINE  = "NEWLINE"
+	SPACE    = "SPACE"
 	CONTENT  = "CONTENT"
 )
