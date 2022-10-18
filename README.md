@@ -1,3 +1,3 @@
 # gorg
 
-Go template repository.
+org parser
