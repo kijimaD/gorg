@@ -25,7 +25,17 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.ch {
 	case '*':
-		tok = newToken(token.ASTERISK, l.ch)
+		if l.peekChar() == '*' {
+			l.readChar()
+			if l.peekChar() == '*' {
+				l.readChar()
+				tok = token.Token{Type: token.H3, Literal: "***"}
+			} else {
+				tok = token.Token{Type: token.H2, Literal: "**"}
+			}
+		} else {
+			tok = newToken(token.H1, l.ch)
+		}
 	default:
 		tok.Type = token.CONTENT
 		tok.Literal = l.readString()
@@ -48,6 +58,15 @@ func (l *Lexer) readChar() {
 	}
 	l.position = l.readPosition
 	l.readPosition += 1
+}
+
+// のぞき見(peek)。readChar()の、文字解析器を進めずないバージョン。先読みだけを行う
+func (l *Lexer) peekChar() byte {
+	if l.readPosition >= len(l.input) {
+		return 0
+	} else {
+		return l.input[l.readPosition] // 次の位置を返す
+	}
 }
 
 // 文字列を読み取る

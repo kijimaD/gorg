@@ -9,6 +9,8 @@ type Token struct {
 }
 
 const (
-	ASTERISK = "*"
-	CONTENT  = "CONTENT"
+	H1      = "*"
+	H2      = "**"
+	H3      = "***"
+	CONTENT = "CONTENT"
 )

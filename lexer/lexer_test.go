@@ -8,24 +8,28 @@ import (
 
 func TestNextToken(t *testing.T) {
 	input := `
-** h2
+* h1
 content
 ** h2
 foo
+*** h3
+bar
 `
+	// **invalid
 
 	tests := []struct {
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
-		{token.ASTERISK, "*"},
-		{token.ASTERISK, "*"},
-		{token.CONTENT, "h2"},
+		{token.H1, "*"},
+		{token.CONTENT, "h1"},
 		{token.CONTENT, "content"},
-		{token.ASTERISK, "*"},
-		{token.ASTERISK, "*"},
+		{token.H2, "**"},
 		{token.CONTENT, "h2"},
 		{token.CONTENT, "foo"},
+		{token.H3, "***"},
+		{token.CONTENT, "h3"},
+		{token.CONTENT, "bar"},
 	}
 
 	l := New(input)
