@@ -26,7 +26,7 @@ func (o *Org) TokenLiteral() string {
 type Header struct {
 	Token token.Token
 	Level int
-	Value string
+	Value string // TODO: ここにも何かしらマークがある可能性があるので、あとでnodeを返すようにしたい
 }
 
 func (h *Header) TokenLiteral() string { return strings.Repeat(h.Token.Literal, h.Level) }

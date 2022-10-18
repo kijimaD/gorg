@@ -30,20 +30,6 @@ func New(l *lexer.Lexer) *Parser {
 	return p
 }
 
-func (p *Parser) nextToken() {
-	p.curToken = p.peekToken
-	p.peekToken = p.l.NextToken()
-}
-
-func (p *Parser) parseNode() ast.Node {
-	switch p.curToken.Type {
-	case token.ASTERISK:
-		return p.parseAsterisk()
-	default:
-		return nil
-	}
-}
-
 func (p *Parser) ParseOrg() *ast.Org {
 	org := &ast.Org{}
 	org.Nodes = []ast.Node{}
@@ -58,6 +44,24 @@ func (p *Parser) ParseOrg() *ast.Org {
 	}
 
 	return org
+}
+
+/////////////
+// private //
+/////////////
+
+func (p *Parser) nextToken() {
+	p.curToken = p.peekToken
+	p.peekToken = p.l.NextToken()
+}
+
+func (p *Parser) parseNode() ast.Node {
+	switch p.curToken.Type {
+	case token.ASTERISK:
+		return p.parseAsterisk()
+	default:
+		return nil
+	}
 }
 
 func (p *Parser) parseAsterisk() ast.Node {
