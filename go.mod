@@ -1,3 +1,3 @@
-module go_skel
+module gorg
 
 go 1.19

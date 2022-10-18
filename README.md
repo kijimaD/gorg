@@ -1,3 +1,3 @@
-# go_skel
+# gorg
 
 Go template repository.
