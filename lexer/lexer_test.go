@@ -9,12 +9,16 @@ import (
 func TestNextToken(t *testing.T) {
 	input := `
 * h1
-content
 ** h2
 *** h3
 **** h4
 ***** h5
+content
 **invalid
+- list1
+- list2
++ list1
++ list2
 `
 
 	tests := []struct {
@@ -25,9 +29,6 @@ content
 		{token.ASTERISK, "*"},
 		{token.SPACE, " "},
 		{token.CONTENT, "h1"},
-		{token.NEWLINE, "\n"},
-
-		{token.CONTENT, "content"},
 		{token.NEWLINE, "\n"},
 
 		{token.ASTERISK, "*"},
@@ -60,9 +61,32 @@ content
 		{token.CONTENT, "h5"},
 		{token.NEWLINE, "\n"},
 
+		{token.CONTENT, "content"},
+		{token.NEWLINE, "\n"},
+
 		{token.ASTERISK, "*"},
 		{token.ASTERISK, "*"},
 		{token.CONTENT, "invalid"},
+		{token.NEWLINE, "\n"},
+
+		{token.MINUS, "-"},
+		{token.SPACE, " "},
+		{token.CONTENT, "list1"},
+		{token.NEWLINE, "\n"},
+
+		{token.MINUS, "-"},
+		{token.SPACE, " "},
+		{token.CONTENT, "list2"},
+		{token.NEWLINE, "\n"},
+
+		{token.PLUS, "+"},
+		{token.SPACE, " "},
+		{token.CONTENT, "list1"},
+		{token.NEWLINE, "\n"},
+
+		{token.PLUS, "+"},
+		{token.SPACE, " "},
+		{token.CONTENT, "list2"},
 		{token.NEWLINE, "\n"},
 	}
 

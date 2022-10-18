@@ -30,6 +30,10 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.SPACE, l.ch)
 	case '\n':
 		tok = newToken(token.NEWLINE, l.ch)
+	case '-':
+		tok = newToken(token.MINUS, l.ch)
+	case '+':
+		tok = newToken(token.PLUS, l.ch)
 	default:
 		tok.Type = token.CONTENT
 		tok.Literal = l.readString()

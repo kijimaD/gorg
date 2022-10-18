@@ -13,4 +13,6 @@ const (
 	NEWLINE  = "NEWLINE"
 	SPACE    = "SPACE"
 	CONTENT  = "CONTENT"
+	MINUS    = "MINUS"
+	PLUS     = "PLUS"
 )
