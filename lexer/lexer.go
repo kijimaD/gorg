@@ -24,18 +24,10 @@ func (l *Lexer) NextToken() token.Token {
 	l.skipWhitespace()
 
 	switch l.ch {
+	case '\n':
+		tok = newToken(token.NEWLINE, l.ch)
 	case '*':
-		if l.peekChar() == '*' {
-			l.readChar()
-			if l.peekChar() == '*' {
-				l.readChar()
-				tok = token.Token{Type: token.H3, Literal: "***"}
-			} else {
-				tok = token.Token{Type: token.H2, Literal: "**"}
-			}
-		} else {
-			tok = newToken(token.H1, l.ch)
-		}
+		tok = newToken(token.ASTERISK, l.ch)
 	default:
 		tok.Type = token.CONTENT
 		tok.Literal = l.readString()
@@ -73,17 +65,20 @@ func (l *Lexer) peekChar() byte {
 func (l *Lexer) readString() string {
 	initial_position := l.position
 	for {
-		l.readChar()
-		if l.ch == '\n' {
+		if l.peekChar() == '\n' {
+			// 文字列の最後の文字のpositionでループを終了する
+			// 次の改行トークンを処理するため
 			break
+		} else {
+			l.readChar()
 		}
 	}
-	return l.input[initial_position:l.position]
+	return l.input[initial_position : l.position+1]
 }
 
 // 半角スペースを読み飛ばす
 func (l *Lexer) skipWhitespace() {
-	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+	for l.ch == ' ' {
 		l.readChar()
 	}
 }

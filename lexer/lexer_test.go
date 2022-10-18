@@ -14,22 +14,36 @@ content
 foo
 *** h3
 bar
+**invalid
 `
-	// **invalid
 
 	tests := []struct {
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
-		{token.H1, "*"},
+		{token.NEWLINE, "\n"},
+		{token.ASTERISK, "*"},
 		{token.CONTENT, "h1"},
+		{token.NEWLINE, "\n"},
 		{token.CONTENT, "content"},
-		{token.H2, "**"},
+		{token.NEWLINE, "\n"},
+		{token.ASTERISK, "*"},
+		{token.ASTERISK, "*"},
 		{token.CONTENT, "h2"},
+		{token.NEWLINE, "\n"},
 		{token.CONTENT, "foo"},
-		{token.H3, "***"},
+		{token.NEWLINE, "\n"},
+		{token.ASTERISK, "*"},
+		{token.ASTERISK, "*"},
+		{token.ASTERISK, "*"},
 		{token.CONTENT, "h3"},
+		{token.NEWLINE, "\n"},
 		{token.CONTENT, "bar"},
+		{token.NEWLINE, "\n"},
+		{token.ASTERISK, "*"},
+		{token.ASTERISK, "*"},
+		{token.CONTENT, "invalid"},
+		{token.NEWLINE, "\n"},
 	}
 
 	l := New(input)

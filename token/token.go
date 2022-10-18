@@ -9,8 +9,7 @@ type Token struct {
 }
 
 const (
-	H1      = "*"
-	H2      = "**"
-	H3      = "***"
-	CONTENT = "CONTENT"
+	ASTERISK = "*"
+	NEWLINE  = "NL"
+	CONTENT  = "CONTENT"
 )
