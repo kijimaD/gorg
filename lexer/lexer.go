@@ -32,6 +32,9 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.MINUS, l.ch)
 	case '+':
 		tok = newToken(token.PLUS, l.ch)
+	case 0:
+		tok.Literal = ""
+		tok.Type = token.EOF
 	default:
 		tok.Type = token.CONTENT
 		tok.Literal = l.readString()
@@ -56,7 +59,7 @@ func (l *Lexer) readChar() {
 	l.readPosition += 1
 }
 
-// のぞき見(peek)。readChar()の、文字解析器を進めずないバージョン。先読みだけを行う
+// のぞき見(peek)。readChar()の、文字解析器を進めないバージョン。先読みだけを行う
 func (l *Lexer) peekChar() byte {
 	if l.readPosition >= len(l.input) {
 		return 0

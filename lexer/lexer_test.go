@@ -88,6 +88,8 @@ content
 		{token.SPACE, " "},
 		{token.CONTENT, "list2"},
 		{token.NEWLINE, "\n"},
+
+		{token.EOF, ""},
 	}
 
 	l := New(input)

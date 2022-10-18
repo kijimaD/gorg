@@ -15,4 +15,5 @@ const (
 	CONTENT  = "CONTENT"
 	MINUS    = "MINUS"
 	PLUS     = "PLUS"
+	EOF      = "EOF"
 )
