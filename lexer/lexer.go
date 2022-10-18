@@ -21,8 +21,6 @@ func New(input string) *Lexer {
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
-	// l.skipWhitespace()
-
 	switch l.ch {
 	case '*':
 		tok = newToken(token.ASTERISK, l.ch)
@@ -80,13 +78,6 @@ func (l *Lexer) readString() string {
 		}
 	}
 	return l.input[initial_position : l.position+1]
-}
-
-// 半角スペースを読み飛ばす
-func (l *Lexer) skipWhitespace() {
-	for l.ch == ' ' {
-		l.readChar()
-	}
 }
 
 // トークンを生成する
