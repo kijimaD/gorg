@@ -43,3 +43,14 @@ func TestHeaderNodes(t *testing.T) {
 		t.Errorf("4: not match header")
 	}
 }
+
+func TestBoldNodes(t *testing.T) {
+	input := `*bold*`
+	p := New(input)
+	o := p.ParseOrg()
+
+	if len(o.Nodes) != 2 {
+		t.Fatalf("program has not enough nodes. got=%d",
+			len(o.Nodes))
+	}
+}

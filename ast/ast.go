@@ -40,13 +40,25 @@ func (h *Normal) String() string {
 
 type Header struct {
 	Level  int
-	Parent Node
+	Parent *Node
 }
 
 func (h *Header) TokenLiteral() string { return strings.Repeat("*", h.Level) }
 func (h *Header) String() string {
 	var out bytes.Buffer
 	text := fmt.Sprintf("{type: header, Level: %d}", h.Level)
+	out.WriteString(text)
+	return out.String()
+}
+
+type Bold struct {
+	Parent *Node
+}
+
+func (b *Bold) TokenLiteral() string { return token.ASTERISK }
+func (b *Bold) String() string {
+	var out bytes.Buffer
+	text := fmt.Sprintf("{type: bold}")
 	out.WriteString(text)
 	return out.String()
 }

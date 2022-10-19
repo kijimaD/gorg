@@ -65,6 +65,14 @@ func (p *Parser) parseNode(o *ast.Org, s string) {
 		normal := &ast.Normal{Value: value, Parent: header}
 		o.Nodes = append(o.Nodes, header)
 		o.Nodes = append(o.Nodes, normal)
+	} else if len(p.parseBold(str)) > 0 {
+		// bold
+		value := p.parseBold(s)
+
+		bold := &ast.Bold{}
+		normal := &ast.Normal{Value: value, Parent: bold}
+		o.Nodes = append(o.Nodes, bold)
+		o.Nodes = append(o.Nodes, normal)
 	} else {
 		// normal
 		normal := &ast.Normal{Value: s, Parent: nil}
@@ -74,6 +82,21 @@ func (p *Parser) parseNode(o *ast.Org, s string) {
 
 func (p *Parser) parseHeader(s string, exp string) string {
 	re := regexp.MustCompile(exp)
+	ok := re.MatchString(s)
+
+	var match string
+	matchs := re.FindStringSubmatch(s)
+	if ok {
+		match = matchs[1]
+	} else {
+		match = ""
+	}
+
+	return match
+}
+
+func (p *Parser) parseBold(s string) string {
+	re := regexp.MustCompile(`\*(.*)\*`)
 	ok := re.MatchString(s)
 
 	var match string
