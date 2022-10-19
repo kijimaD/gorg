@@ -1,9 +1,6 @@
 package parser
 
 import (
-	"gorg/ast"
-	"gorg/lexer"
-	"strings"
 	"testing"
 )
 
@@ -12,24 +9,24 @@ func TestHeaderNodes(t *testing.T) {
 * header1
 ** header2
 `
-	l := lexer.New(input)
-	o := New(l)
-	org := o.ParseOrg()
+	p := New(input)
+	o := p.ParseOrg()
 
-	if len(org.Nodes) != 2 {
+	if len(o.Nodes) != 4 {
 		t.Fatalf("program has not enough nodes. got=%d",
-			len(org.Nodes))
+			len(o.Nodes))
 	}
 
-	for _, node := range org.Nodes {
-		headerNode, ok := node.(*ast.Header)
-		if !ok {
-			t.Errorf("headerNode not *ast.Header. got=%T", node)
-			continue
-		}
-		if headerNode.TokenLiteral() != strings.Repeat("*", headerNode.Level) {
-			t.Errorf("headerNode.TokenLiteral not 'header'. got %q",
-				node.TokenLiteral())
-		}
+	if o.Nodes[0].String() != "{type: header, Level: 1}" {
+		t.Errorf("1: not match header")
+	}
+	if o.Nodes[1].String() != "{type: normal, Value: header1}" {
+		t.Errorf("2: not match header")
+	}
+	if o.Nodes[2].String() != "{type: header, Level: 2}" {
+		t.Errorf("3: not match header")
+	}
+	if o.Nodes[3].String() != "{type: normal, Value: header2}" {
+		t.Errorf("4: not match header")
 	}
 }

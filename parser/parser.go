@@ -1,16 +1,19 @@
 package parser
 
 import (
+	"bufio"
+	"bytes"
 	"gorg/ast"
-	"gorg/lexer"
-	"gorg/token"
+	"regexp"
+)
+
+const (
+	HEADER1_REGEXP = `^\* (.*)`
+	HEADER2_REGEXP = `^\*\* (.*)`
 )
 
 type Parser struct {
-	l *lexer.Lexer
-
-	curToken  token.Token
-	peekToken token.Token
+	input string
 }
 
 type (
@@ -18,14 +21,10 @@ type (
 	prefixParseFn func() ast.Node
 )
 
-func New(l *lexer.Lexer) *Parser {
+func New(input string) *Parser {
 	p := &Parser{
-		l: l,
+		input: input,
 	}
-
-	// 2つトークンを読み込む。curTokenとpeekTokenの両方がセットされる
-	p.nextToken()
-	p.nextToken()
 
 	return p
 }
@@ -34,13 +33,10 @@ func (p *Parser) ParseOrg() *ast.Org {
 	org := &ast.Org{}
 	org.Nodes = []ast.Node{}
 
-	for p.curToken.Type != token.EOF {
-		node := p.parseNode()
-
-		if node != nil {
-			org.Nodes = append(org.Nodes, node)
-		}
-		p.nextToken()
+	buf := bytes.NewBufferString(p.input)
+	scanner := bufio.NewScanner(buf)
+	for scanner.Scan() {
+		p.parseNode(org, scanner.Text())
 	}
 
 	return org
@@ -50,49 +46,37 @@ func (p *Parser) ParseOrg() *ast.Org {
 // private //
 /////////////
 
-func (p *Parser) nextToken() {
-	p.curToken = p.peekToken
-	p.peekToken = p.l.NextToken()
-}
+func (p *Parser) parseNode(o *ast.Org, s string) {
+	str := s
 
-func (p *Parser) parseNode() ast.Node {
-	switch p.curToken.Type {
-	case token.ASTERISK:
-		return p.parseAsterisk()
-	default:
-		return nil
+	if len(p.parseHeader(str, HEADER1_REGEXP)) > 0 {
+		value := p.parseHeader(s, HEADER1_REGEXP)
+
+		header := &ast.Header{Level: 1}
+		normal := &ast.Normal{Value: value, Parent: header}
+		o.Nodes = append(o.Nodes, header)
+		o.Nodes = append(o.Nodes, normal)
+	} else if len(p.parseHeader(str, HEADER2_REGEXP)) > 0 {
+		value := p.parseHeader(s, HEADER2_REGEXP)
+
+		header := &ast.Header{Level: 2}
+		normal := &ast.Normal{Value: value, Parent: header}
+		o.Nodes = append(o.Nodes, header)
+		o.Nodes = append(o.Nodes, normal)
 	}
 }
 
-func (p *Parser) parseAsterisk() ast.Node {
-	header := &ast.Header{Token: p.curToken}
+func (p *Parser) parseHeader(s string, exp string) string {
+	re := regexp.MustCompile(exp)
+	ok := re.MatchString(s)
 
-	header.Level = 1
-
-	for p.expectPeek(token.ASTERISK) {
-		header.Level += 1
-	}
-
-	if !p.expectPeek(token.SPACE) {
-		return nil
-	}
-
-	p.nextToken()
-	header.Value = p.curToken.Literal
-	return header
-}
-
-// peekTokenの型をチェックし、その型が正しい場合に限ってnextTokenを読んで、トークンを進める
-func (p *Parser) expectPeek(t token.TokenType) bool {
-	if p.peekTokenIs(t) {
-		p.nextToken()
-		return true
+	var match string
+	matchs := re.FindStringSubmatch(s)
+	if ok {
+		match = matchs[1]
 	} else {
-		return false
+		match = ""
 	}
-}
 
-// 次のトークンと引数の型を比較する
-func (p *Parser) peekTokenIs(t token.TokenType) bool {
-	return p.peekToken.Type == t
+	return match
 }

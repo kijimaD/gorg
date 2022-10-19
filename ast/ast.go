@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"fmt"
 	"gorg/token"
 	"strings"
 )
@@ -23,19 +24,29 @@ func (o *Org) TokenLiteral() string {
 	}
 }
 
-type Header struct {
-	Token token.Token
-	Level int
-	Value string // TODO: ここにも何かしらマークがある可能性があるので、あとでnodeを返すようにしたい
+type Normal struct {
+	Token  token.Token
+	Value  string
+	Parent Node
 }
 
-func (h *Header) TokenLiteral() string { return strings.Repeat(h.Token.Literal, h.Level) }
+func (n *Normal) TokenLiteral() string { return n.Token.Literal }
+func (h *Normal) String() string {
+	var out bytes.Buffer
+	text := fmt.Sprintf("{type: normal, Value: %s}", h.Value)
+	out.WriteString(text)
+	return out.String()
+}
+
+type Header struct {
+	Level  int
+	Parent Node
+}
+
+func (h *Header) TokenLiteral() string { return strings.Repeat("*", h.Level) }
 func (h *Header) String() string {
 	var out bytes.Buffer
-
-	out.WriteString(strings.Repeat(h.Token.Literal, h.Level))
-	out.WriteString(" ")
-	out.WriteString(h.Value)
-
+	text := fmt.Sprintf("{type: header, Level: %d}", h.Level)
+	out.WriteString(text)
 	return out.String()
 }
