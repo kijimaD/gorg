@@ -91,12 +91,16 @@ func (p *Parser) parseNode(o *ast.Org, str string, parent ast.Node) {
 		p.parseNode(o, center, bold)
 
 		p.parseNode(o, right, parent)
-	} else {
+	} else if len(p.parseComment(str)) > 0 {
+		comment := &ast.Comment{Parent: parent}
+		o.Nodes = append(o.Nodes, comment)
+
+		normal := &ast.Normal{Value: p.parseComment(str), Parent: comment}
+		o.Nodes = append(o.Nodes, normal)
+	} else if str != "" {
 		// normal
-		if str != "" {
-			normal := &ast.Normal{Value: str, Parent: o.Nodes[len(o.Nodes)-1]}
-			o.Nodes = append(o.Nodes, normal)
-		}
+		normal := &ast.Normal{Value: str, Parent: o.Nodes[len(o.Nodes)-1]}
+		o.Nodes = append(o.Nodes, normal)
 	}
 }
 
@@ -128,4 +132,16 @@ func (p *Parser) boldLeftMatch(s string) bool {
 func (p *Parser) boldRightMatch(s string) bool {
 	re := regexp.MustCompile(BOLD_RIGHT_REGEXP)
 	return re.MatchString(s)
+}
+
+func (p *Parser) parseComment(s string) string {
+	re := regexp.MustCompile(`^# (.*)`)
+	matches := re.FindStringSubmatch(s)
+	var match string
+	if len(matches) > 0 {
+		match = matches[1]
+	} else {
+		match = ""
+	}
+	return match
 }

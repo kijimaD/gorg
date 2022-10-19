@@ -73,7 +73,7 @@ func TestBoldNodes(t *testing.T) {
 	if o.Nodes[1].String() != "{type: normal, Value: front, Parent: *ast.Normal}" {
 		t.Errorf("1: not match header")
 	}
-	if o.Nodes[2].String() != "{type: bold}" {
+	if o.Nodes[2].String() != "{type: bold, Parent: *ast.Normal}" {
 		t.Errorf("2: not match header")
 	}
 	if o.Nodes[3].String() != "{type: normal, Value: bold, Parent: *ast.Bold}" {
@@ -81,5 +81,30 @@ func TestBoldNodes(t *testing.T) {
 	}
 	if o.Nodes[4].String() != "{type: normal, Value: back, Parent: *ast.Normal}" {
 		t.Errorf("4: not match header")
+	}
+}
+
+func TestCommentNodes(t *testing.T) {
+	input := `normal
+# comment`
+	p := New(input)
+	o := p.ParseOrg()
+
+	if len(o.Nodes) != 4 {
+		t.Fatalf("program has not enough nodes. got=%d",
+			len(o.Nodes))
+	}
+
+	if o.Nodes[0].String() != "{type: normal, Value: root, Parent: <nil>}" {
+		t.Errorf("0: not match header")
+	}
+	if o.Nodes[1].String() != "{type: normal, Value: normal, Parent: *ast.Normal}" {
+		t.Errorf("1: not match header")
+	}
+	if o.Nodes[2].String() != "{type: comment, Parent: *ast.Normal}" {
+		t.Errorf("2: not match header")
+	}
+	if o.Nodes[3].String() != "{type: normal, Value: comment, Parent: *ast.Comment}" {
+		t.Errorf("3: not match header")
 	}
 }

@@ -43,7 +43,7 @@ type Header struct {
 	Parent Node
 }
 
-func (h *Header) TokenLiteral() string { return strings.Repeat("*", h.Level) }
+func (h *Header) TokenLiteral() string { return strings.Repeat(token.ASTERISK, h.Level) }
 func (h *Header) String() string {
 	var out bytes.Buffer
 	text := fmt.Sprintf("{type: header, Level: %d}", h.Level)
@@ -58,6 +58,19 @@ type Bold struct {
 func (b *Bold) TokenLiteral() string { return token.ASTERISK }
 func (b *Bold) String() string {
 	var out bytes.Buffer
-	out.WriteString("{type: bold}")
+	text := fmt.Sprintf("{type: bold, Parent: %T}", b.Parent)
+	out.WriteString(text)
+	return out.String()
+}
+
+type Comment struct {
+	Parent Node
+}
+
+func (c *Comment) TokenLiteral() string { return token.NUMBER_SIGN }
+func (c *Comment) String() string {
+	var out bytes.Buffer
+	text := fmt.Sprintf("{type: comment, Parent: %T}", c.Parent)
+	out.WriteString(text)
 	return out.String()
 }

@@ -9,11 +9,6 @@ type Token struct {
 }
 
 const (
-	ASTERISK = "*"
-	NEWLINE  = "NEWLINE"
-	SPACE    = "SPACE"
-	CONTENT  = "CONTENT"
-	MINUS    = "MINUS"
-	PLUS     = "PLUS"
-	EOF      = "EOF"
+	ASTERISK    = "*"
+	NUMBER_SIGN = "#"
 )
