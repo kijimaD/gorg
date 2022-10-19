@@ -85,8 +85,9 @@ func TestBoldNodes(t *testing.T) {
 }
 
 func TestCommentNodes(t *testing.T) {
+	// コメント直下のノードは再帰パースせずnormalにする
 	input := `normal
-# comment`
+# *comment*`
 	p := New(input)
 	o := p.ParseOrg()
 
@@ -104,7 +105,7 @@ func TestCommentNodes(t *testing.T) {
 	if o.Nodes[2].String() != "{type: comment, Parent: *ast.Normal}" {
 		t.Errorf("2: not match header")
 	}
-	if o.Nodes[3].String() != "{type: normal, Value: comment, Parent: *ast.Comment}" {
+	if o.Nodes[3].String() != "{type: normal, Value: *comment*, Parent: *ast.Comment}" {
 		t.Errorf("3: not match header")
 	}
 }

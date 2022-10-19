@@ -59,6 +59,12 @@ func (p *Parser) parseNode(o *ast.Org, str string, parent ast.Node) {
 		o.Nodes = append(o.Nodes, header)
 
 		p.parseNode(o, strings.Replace(str, "** ", "", 1), header)
+	} else if len(p.parseComment(str)) > 0 {
+		comment := &ast.Comment{Parent: parent}
+		o.Nodes = append(o.Nodes, comment)
+
+		normal := &ast.Normal{Value: p.parseComment(str), Parent: comment}
+		o.Nodes = append(o.Nodes, normal)
 	} else if len(p.parseBold(str)) > 0 {
 		// bold
 		matches := p.parseBold(str)
@@ -91,12 +97,6 @@ func (p *Parser) parseNode(o *ast.Org, str string, parent ast.Node) {
 		p.parseNode(o, center, bold)
 
 		p.parseNode(o, right, parent)
-	} else if len(p.parseComment(str)) > 0 {
-		comment := &ast.Comment{Parent: parent}
-		o.Nodes = append(o.Nodes, comment)
-
-		normal := &ast.Normal{Value: p.parseComment(str), Parent: comment}
-		o.Nodes = append(o.Nodes, normal)
 	} else if str != "" {
 		// normal
 		normal := &ast.Normal{Value: str, Parent: o.Nodes[len(o.Nodes)-1]}
