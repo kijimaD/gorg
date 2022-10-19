@@ -9,8 +9,11 @@ import (
 )
 
 const (
-	HEADER1_REGEXP = `^\* (.*)`
-	HEADER2_REGEXP = `^\*\* (.*)`
+	HEADER1_REGEXP    = `^\* (.*)`
+	HEADER2_REGEXP    = `^\*\* (.*)`
+	BOLD_REGEXP       = `(.*)\*(.*)\*(.*)`
+	BOLD_LEFT_REGEXP  = `(.*)\*(.*)\*`
+	BOLD_RIGHT_REGEXP = `\*(.*)\*(.*)`
 )
 
 type Parser struct {
@@ -63,22 +66,42 @@ func (p *Parser) parseNode(o *ast.Org, str string, parent ast.Node) {
 		p.parseNode(o, strings.Replace(str, "** ", "", 1), header)
 	} else if len(p.parseBold(str)) > 0 {
 		// bold
-		value := p.parseBold(str)
+		matches := p.parseBold(str)
+
+		var left string
+		var center string
+		var right string
+		if len(matches) == 4 {
+			left = matches[1]
+			center = matches[2]
+			right = matches[3]
+		} else if len(matches) == 2 {
+			left = ""
+			center = matches[1]
+			right = ""
+		} else if len(matches) == 3 && p.boldLeftMatch(str) && !p.boldRightMatch(str) {
+			left = matches[1]
+			center = matches[2]
+			right = ""
+		} else if len(matches) == 3 && !p.boldLeftMatch(str) && p.boldRightMatch(str) {
+			left = ""
+			center = matches[1]
+			right = matches[2]
+
+		}
+		p.parseNode(o, left, parent)
+
 		bold := &ast.Bold{Parent: parent}
 		o.Nodes = append(o.Nodes, bold)
+		p.parseNode(o, center, bold)
 
-		str = strings.Replace(str, "*"+value+"*", "", 1)
-
-		// 左
-		// p.parseNode()
-		// 真ん中
-		// p.parseNode()
-		// 右
-		// p.parseNode()
+		p.parseNode(o, right, parent)
 	} else {
 		// normal
-		normal := &ast.Normal{Value: str, Parent: o.Nodes[len(o.Nodes)-1]}
-		o.Nodes = append(o.Nodes, normal)
+		if str != "" {
+			normal := &ast.Normal{Value: str, Parent: o.Nodes[len(o.Nodes)-1]}
+			o.Nodes = append(o.Nodes, normal)
+		}
 	}
 }
 
@@ -97,17 +120,17 @@ func (p *Parser) parseHeader(s string, exp string) string {
 	return match
 }
 
-func (p *Parser) parseBold(s string) string {
-	re := regexp.MustCompile(`\*(.*)\*`)
-	ok := re.MatchString(s)
-
-	var match string
+func (p *Parser) parseBold(s string) []string {
+	re := regexp.MustCompile(BOLD_REGEXP)
 	matchs := re.FindStringSubmatch(s)
-	if ok {
-		match = matchs[1]
-	} else {
-		match = ""
-	}
+	return matchs
+}
+func (p *Parser) boldLeftMatch(s string) bool {
+	re := regexp.MustCompile(BOLD_LEFT_REGEXP)
+	return re.MatchString(s)
+}
 
-	return match
+func (p *Parser) boldRightMatch(s string) bool {
+	re := regexp.MustCompile(BOLD_RIGHT_REGEXP)
+	return re.MatchString(s)
 }
