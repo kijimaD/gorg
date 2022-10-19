@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"gorg/ast"
 	"regexp"
-	"strings"
 )
 
 const (
@@ -52,14 +51,15 @@ func (p *Parser) parseNode(o *ast.Org, str string, parent ast.Node) {
 		header := &ast.Header{Level: 1, Parent: parent}
 		o.Nodes = append(o.Nodes, header)
 
-		p.parseNode(o, strings.Replace(str, "* ", "", 1), header)
+		p.parseNode(o, p.parseHeader(str, HEADER1_REGEXP), header)
 	} else if len(p.parseHeader(str, HEADER2_REGEXP)) > 0 {
 		// header 2
 		header := &ast.Header{Level: 2, Parent: parent}
 		o.Nodes = append(o.Nodes, header)
 
-		p.parseNode(o, strings.Replace(str, "** ", "", 1), header)
+		p.parseNode(o, p.parseHeader(str, HEADER2_REGEXP), header)
 	} else if len(p.parseComment(str)) > 0 {
+		// comment
 		comment := &ast.Comment{Parent: parent}
 		o.Nodes = append(o.Nodes, comment)
 
