@@ -62,7 +62,7 @@ func TestBoldNodes(t *testing.T) {
 	//   - bold
 	//     - normal "bold"
 	//   - normal "back"
-	if len(o.Nodes) != 4 {
+	if len(o.Nodes) != 5 {
 		t.Fatalf("program has not enough nodes. got=%d",
 			len(o.Nodes))
 	}

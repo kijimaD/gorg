@@ -38,7 +38,7 @@ func (p *Parser) ParseOrg() *ast.Org {
 	buf := bytes.NewBufferString(p.input)
 	scanner := bufio.NewScanner(buf)
 	for scanner.Scan() {
-		p.parseNode(org, scanner.Text())
+		p.parseNode(org, scanner.Text(), org.Nodes[0]) // Parent: root
 	}
 
 	return org
@@ -48,28 +48,33 @@ func (p *Parser) ParseOrg() *ast.Org {
 // private //
 /////////////
 
-func (p *Parser) parseNode(o *ast.Org, str string) {
+func (p *Parser) parseNode(o *ast.Org, str string, parent ast.Node) {
 	if len(p.parseHeader(str, HEADER1_REGEXP)) > 0 {
 		// header 1
-		header := &ast.Header{Level: 1, Parent: o.Nodes[len(o.Nodes)-1]}
+		header := &ast.Header{Level: 1, Parent: parent}
 		o.Nodes = append(o.Nodes, header)
 
-		p.parseNode(o, strings.Replace(str, "* ", "", 1))
+		p.parseNode(o, strings.Replace(str, "* ", "", 1), header)
 	} else if len(p.parseHeader(str, HEADER2_REGEXP)) > 0 {
 		// header 2
-		header := &ast.Header{Level: 2, Parent: o.Nodes[len(o.Nodes)-1]}
+		header := &ast.Header{Level: 2, Parent: parent}
 		o.Nodes = append(o.Nodes, header)
 
-		p.parseNode(o, strings.Replace(str, "** ", "", 1))
+		p.parseNode(o, strings.Replace(str, "** ", "", 1), header)
 	} else if len(p.parseBold(str)) > 0 {
 		// bold
 		value := p.parseBold(str)
-		bold := &ast.Bold{Parent: nil} // TODO: 後で入れる
-		normal := &ast.Normal{Value: value, Parent: bold}
+		bold := &ast.Bold{Parent: parent}
 		o.Nodes = append(o.Nodes, bold)
-		o.Nodes = append(o.Nodes, normal)
 
 		str = strings.Replace(str, "*"+value+"*", "", 1)
+
+		// 左
+		// p.parseNode()
+		// 真ん中
+		// p.parseNode()
+		// 右
+		// p.parseNode()
 	} else {
 		// normal
 		normal := &ast.Normal{Value: str, Parent: o.Nodes[len(o.Nodes)-1]}
