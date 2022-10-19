@@ -58,7 +58,6 @@ type Bold struct {
 func (b *Bold) TokenLiteral() string { return token.ASTERISK }
 func (b *Bold) String() string {
 	var out bytes.Buffer
-	text := fmt.Sprintf("{type: bold}")
-	out.WriteString(text)
+	out.WriteString("{type: bold}")
 	return out.String()
 }

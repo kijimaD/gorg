@@ -20,11 +20,6 @@ type Parser struct {
 	input string
 }
 
-type (
-	// ** Header
-	prefixParseFn func() ast.Node
-)
-
 func New(input string) *Parser {
 	p := &Parser{
 		input: input,
