@@ -14,8 +14,8 @@ func TestNormalNodes(t *testing.T) {
 			len(o.Nodes))
 	}
 
-	if o.Nodes[0].String() != "{type: normal, Value: text}" {
-		t.Errorf("1: not match header")
+	if o.Nodes[0].String() != "{type: normal, Value: text, Parent: <nil>}" {
+		t.Errorf("1: not match header.")
 	}
 }
 
@@ -33,13 +33,13 @@ func TestHeaderNodes(t *testing.T) {
 	if o.Nodes[0].String() != "{type: header, Level: 1}" {
 		t.Errorf("1: not match header")
 	}
-	if o.Nodes[1].String() != "{type: normal, Value: header1}" {
+	if o.Nodes[1].String() != "{type: normal, Value: header1, Parent: *ast.Header}" {
 		t.Errorf("2: not match header")
 	}
 	if o.Nodes[2].String() != "{type: header, Level: 2}" {
 		t.Errorf("3: not match header")
 	}
-	if o.Nodes[3].String() != "{type: normal, Value: header2}" {
+	if o.Nodes[3].String() != "{type: normal, Value: header2, Parent: *ast.Header}" {
 		t.Errorf("4: not match header")
 	}
 }

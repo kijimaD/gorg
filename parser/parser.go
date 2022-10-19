@@ -69,7 +69,7 @@ func (p *Parser) parseNode(o *ast.Org, s string) {
 		// bold
 		value := p.parseBold(s)
 
-		bold := &ast.Bold{}
+		bold := &ast.Bold{Parent: nil} // TODO: 後で入れる
 		normal := &ast.Normal{Value: value, Parent: bold}
 		o.Nodes = append(o.Nodes, bold)
 		o.Nodes = append(o.Nodes, normal)
