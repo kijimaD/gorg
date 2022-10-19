@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"gorg/ast"
 	"regexp"
+	"strings"
 )
 
 const (
@@ -32,6 +33,7 @@ func New(input string) *Parser {
 func (p *Parser) ParseOrg() *ast.Org {
 	org := &ast.Org{}
 	org.Nodes = []ast.Node{}
+	org.Nodes = append(org.Nodes, &ast.Normal{Value: "root"})
 
 	buf := bytes.NewBufferString(p.input)
 	scanner := bufio.NewScanner(buf)
@@ -46,36 +48,31 @@ func (p *Parser) ParseOrg() *ast.Org {
 // private //
 /////////////
 
-func (p *Parser) parseNode(o *ast.Org, s string) {
-	str := s
-
+func (p *Parser) parseNode(o *ast.Org, str string) {
 	if len(p.parseHeader(str, HEADER1_REGEXP)) > 0 {
 		// header 1
-		value := p.parseHeader(s, HEADER1_REGEXP)
-
-		header := &ast.Header{Level: 1}
-		normal := &ast.Normal{Value: value, Parent: header}
+		header := &ast.Header{Level: 1, Parent: o.Nodes[len(o.Nodes)-1]}
 		o.Nodes = append(o.Nodes, header)
-		o.Nodes = append(o.Nodes, normal)
+
+		p.parseNode(o, strings.Replace(str, "* ", "", 1))
 	} else if len(p.parseHeader(str, HEADER2_REGEXP)) > 0 {
 		// header 2
-		value := p.parseHeader(s, HEADER2_REGEXP)
-
-		header := &ast.Header{Level: 2}
-		normal := &ast.Normal{Value: value, Parent: header}
+		header := &ast.Header{Level: 2, Parent: o.Nodes[len(o.Nodes)-1]}
 		o.Nodes = append(o.Nodes, header)
-		o.Nodes = append(o.Nodes, normal)
+
+		p.parseNode(o, strings.Replace(str, "** ", "", 1))
 	} else if len(p.parseBold(str)) > 0 {
 		// bold
-		value := p.parseBold(s)
-
+		value := p.parseBold(str)
 		bold := &ast.Bold{Parent: nil} // TODO: 後で入れる
 		normal := &ast.Normal{Value: value, Parent: bold}
 		o.Nodes = append(o.Nodes, bold)
 		o.Nodes = append(o.Nodes, normal)
+
+		str = strings.Replace(str, "*"+value+"*", "", 1)
 	} else {
 		// normal
-		normal := &ast.Normal{Value: s, Parent: nil}
+		normal := &ast.Normal{Value: str, Parent: o.Nodes[len(o.Nodes)-1]}
 		o.Nodes = append(o.Nodes, normal)
 	}
 }

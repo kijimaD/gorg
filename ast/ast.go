@@ -40,7 +40,7 @@ func (h *Normal) String() string {
 
 type Header struct {
 	Level  int
-	Parent *Node
+	Parent Node
 }
 
 func (h *Header) TokenLiteral() string { return strings.Repeat("*", h.Level) }
@@ -52,7 +52,7 @@ func (h *Header) String() string {
 }
 
 type Bold struct {
-	Parent *Node
+	Parent Node
 }
 
 func (b *Bold) TokenLiteral() string { return token.ASTERISK }
