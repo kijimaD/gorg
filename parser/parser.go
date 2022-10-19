@@ -50,6 +50,7 @@ func (p *Parser) parseNode(o *ast.Org, s string) {
 	str := s
 
 	if len(p.parseHeader(str, HEADER1_REGEXP)) > 0 {
+		// header 1
 		value := p.parseHeader(s, HEADER1_REGEXP)
 
 		header := &ast.Header{Level: 1}
@@ -57,11 +58,16 @@ func (p *Parser) parseNode(o *ast.Org, s string) {
 		o.Nodes = append(o.Nodes, header)
 		o.Nodes = append(o.Nodes, normal)
 	} else if len(p.parseHeader(str, HEADER2_REGEXP)) > 0 {
+		// header 2
 		value := p.parseHeader(s, HEADER2_REGEXP)
 
 		header := &ast.Header{Level: 2}
 		normal := &ast.Normal{Value: value, Parent: header}
 		o.Nodes = append(o.Nodes, header)
+		o.Nodes = append(o.Nodes, normal)
+	} else {
+		// normal
+		normal := &ast.Normal{Value: s, Parent: nil}
 		o.Nodes = append(o.Nodes, normal)
 	}
 }

@@ -4,11 +4,24 @@ import (
 	"testing"
 )
 
+func TestNormalNodes(t *testing.T) {
+	input := `text`
+	p := New(input)
+	o := p.ParseOrg()
+
+	if len(o.Nodes) != 1 {
+		t.Fatalf("program has not enough nodes. got=%d",
+			len(o.Nodes))
+	}
+
+	if o.Nodes[0].String() != "{type: normal, Value: text}" {
+		t.Errorf("1: not match header")
+	}
+}
+
 func TestHeaderNodes(t *testing.T) {
-	input := `
-* header1
-** header2
-`
+	input := `* header1
+** header2`
 	p := New(input)
 	o := p.ParseOrg()
 
