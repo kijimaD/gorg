@@ -38,7 +38,7 @@ type Normal struct {
 func (n *Normal) TokenLiteral() string { return n.Token.Literal }
 func (h *Normal) String() string {
 	var out bytes.Buffer
-	text := fmt.Sprintf("{type: normal, Value: %s, Parent: %T}", h.Value, h.Parent)
+	text := fmt.Sprintf("{type: normal, Value: '%s', Parent: %T}", h.Value, h.Parent)
 	out.WriteString(text)
 	return out.String()
 }

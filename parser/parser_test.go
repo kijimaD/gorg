@@ -6,11 +6,12 @@ import (
 
 func TestNormalNodes(t *testing.T) {
 	input := `text1
+
 text2`
 	p := New(input)
 	o := p.ParseOrg()
 
-	if len(o.Nodes) != 3 {
+	if len(o.Nodes) != 4 {
 		t.Fatalf("program has not enough nodes. got=%d",
 			len(o.Nodes))
 	}
@@ -19,8 +20,9 @@ text2`
 		input string
 	}{
 		{"{type: root}"},
-		{"{type: normal, Value: text1, Parent: *ast.Root}"},
-		{"{type: normal, Value: text2, Parent: *ast.Root}"},
+		{"{type: normal, Value: 'text1', Parent: *ast.Root}"},
+		{"{type: normal, Value: '', Parent: *ast.Root}"},
+		{"{type: normal, Value: 'text2', Parent: *ast.Root}"},
 	}
 
 	for i, tt := range tests {
@@ -32,11 +34,13 @@ text2`
 
 func TestHeaderNodes(t *testing.T) {
 	input := `* header1
-** header2`
+text1
+** header2
+text2`
 	p := New(input)
 	o := p.ParseOrg()
 
-	if len(o.Nodes) != 5 {
+	if len(o.Nodes) != 7 {
 		t.Fatalf("program has not enough nodes. got=%d",
 			len(o.Nodes))
 	}
@@ -46,9 +50,11 @@ func TestHeaderNodes(t *testing.T) {
 	}{
 		{"{type: root}"},
 		{"{type: header, Level: 1}"},
-		{"{type: normal, Value: header1, Parent: *ast.Header}"},
+		{"{type: normal, Value: 'header1', Parent: *ast.Header}"},
+		{"{type: normal, Value: 'text1', Parent: *ast.Root}"},
 		{"{type: header, Level: 2}"},
-		{"{type: normal, Value: header2, Parent: *ast.Header}"},
+		{"{type: normal, Value: 'header2', Parent: *ast.Header}"},
+		{"{type: normal, Value: 'text2', Parent: *ast.Root}"},
 	}
 
 	for i, tt := range tests {
@@ -78,10 +84,10 @@ func TestBoldNodes(t *testing.T) {
 		input string
 	}{
 		{"{type: root}"},
-		{"{type: normal, Value: front, Parent: *ast.Root}"},
+		{"{type: normal, Value: 'front', Parent: *ast.Root}"},
 		{"{type: bold, Parent: *ast.Root}"},
-		{"{type: normal, Value: bold, Parent: *ast.Bold}"},
-		{"{type: normal, Value: back, Parent: *ast.Root}"},
+		{"{type: normal, Value: 'bold', Parent: *ast.Bold}"},
+		{"{type: normal, Value: 'back', Parent: *ast.Root}"},
 	}
 
 	for i, tt := range tests {
@@ -105,10 +111,10 @@ func TestItalicNodes(t *testing.T) {
 		input string
 	}{
 		{"{type: root}"},
-		{"{type: normal, Value: front, Parent: *ast.Root}"},
+		{"{type: normal, Value: 'front', Parent: *ast.Root}"},
 		{"{type: italic, Parent: *ast.Root}"},
-		{"{type: normal, Value: italic, Parent: *ast.Italic}"},
-		{"{type: normal, Value: back, Parent: *ast.Root}"},
+		{"{type: normal, Value: 'italic', Parent: *ast.Italic}"},
+		{"{type: normal, Value: 'back', Parent: *ast.Root}"},
 	}
 
 	for i, tt := range tests {
@@ -134,9 +140,9 @@ func TestCommentNodes(t *testing.T) {
 		input string
 	}{
 		{"{type: root}"},
-		{"{type: normal, Value: normal, Parent: *ast.Root}"},
+		{"{type: normal, Value: 'normal', Parent: *ast.Root}"},
 		{"{type: comment, Parent: *ast.Root}"},
-		{"{type: normal, Value: *comment*, Parent: *ast.Comment}"},
+		{"{type: normal, Value: '*comment*', Parent: *ast.Comment}"},
 	}
 
 	for i, tt := range tests {
@@ -144,8 +150,4 @@ func TestCommentNodes(t *testing.T) {
 			t.Errorf("%d: not match header got=%q", i, o.Nodes[i].String())
 		}
 	}
-}
-
-func assertAst(t *testing.T, i int) {
-
 }
