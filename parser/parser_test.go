@@ -14,12 +14,17 @@ func TestNormalNodes(t *testing.T) {
 			len(o.Nodes))
 	}
 
-	// root
-	if o.Nodes[0].String() != "{type: root}" {
-		t.Errorf("1: not match header. got=%q", o.Nodes[0].String())
+	tests := []struct {
+		input string
+	}{
+		{"{type: root}"},
+		{"{type: normal, Value: text, Parent: *ast.Root}"},
 	}
-	if o.Nodes[1].String() != "{type: normal, Value: text, Parent: *ast.Root}" {
-		t.Errorf("1: not match header. got=%q", o.Nodes[0].String())
+
+	for i, tt := range tests {
+		if o.Nodes[i].String() != tt.input {
+			t.Errorf("%d: not match header", i)
+		}
 	}
 }
 
@@ -34,20 +39,20 @@ func TestHeaderNodes(t *testing.T) {
 			len(o.Nodes))
 	}
 
-	if o.Nodes[0].String() != "{type: root}" {
-		t.Errorf("0: not match header")
+	tests := []struct {
+		input string
+	}{
+		{"{type: root}"},
+		{"{type: header, Level: 1}"},
+		{"{type: normal, Value: header1, Parent: *ast.Header}"},
+		{"{type: header, Level: 2}"},
+		{"{type: normal, Value: header2, Parent: *ast.Header}"},
 	}
-	if o.Nodes[1].String() != "{type: header, Level: 1}" {
-		t.Errorf("1: not match header")
-	}
-	if o.Nodes[2].String() != "{type: normal, Value: header1, Parent: *ast.Header}" {
-		t.Errorf("2: not match header")
-	}
-	if o.Nodes[3].String() != "{type: header, Level: 2}" {
-		t.Errorf("3: not match header")
-	}
-	if o.Nodes[4].String() != "{type: normal, Value: header2, Parent: *ast.Header}" {
-		t.Errorf("4: not match header")
+
+	for i, tt := range tests {
+		if o.Nodes[i].String() != tt.input {
+			t.Errorf("%d: not match header", i)
+		}
 	}
 }
 
@@ -67,20 +72,20 @@ func TestBoldNodes(t *testing.T) {
 			len(o.Nodes))
 	}
 
-	if o.Nodes[0].String() != "{type: root}" {
-		t.Errorf("0: not match header")
+	tests := []struct {
+		input string
+	}{
+		{"{type: root}"},
+		{"{type: normal, Value: front, Parent: *ast.Root}"},
+		{"{type: bold, Parent: *ast.Root}"},
+		{"{type: normal, Value: bold, Parent: *ast.Bold}"},
+		{"{type: normal, Value: back, Parent: *ast.Normal}"},
 	}
-	if o.Nodes[1].String() != "{type: normal, Value: front, Parent: *ast.Root}" {
-		t.Errorf("1: not match header")
-	}
-	if o.Nodes[2].String() != "{type: bold, Parent: *ast.Root}" {
-		t.Errorf("2: not match header")
-	}
-	if o.Nodes[3].String() != "{type: normal, Value: bold, Parent: *ast.Bold}" {
-		t.Errorf("3: not match header")
-	}
-	if o.Nodes[4].String() != "{type: normal, Value: back, Parent: *ast.Normal}" {
-		t.Errorf("4: not match header")
+
+	for i, tt := range tests {
+		if o.Nodes[i].String() != tt.input {
+			t.Errorf("%d: not match header", i)
+		}
 	}
 }
 
@@ -94,20 +99,20 @@ func TestItalicNodes(t *testing.T) {
 			len(o.Nodes))
 	}
 
-	if o.Nodes[0].String() != "{type: root}" {
-		t.Errorf("0: not match header")
+	tests := []struct {
+		input string
+	}{
+		{"{type: root}"},
+		{"{type: normal, Value: front, Parent: *ast.Root}"},
+		{"{type: italic, Parent: *ast.Root}"},
+		{"{type: normal, Value: italic, Parent: *ast.Italic}"},
+		{"{type: normal, Value: back, Parent: *ast.Normal}"},
 	}
-	if o.Nodes[1].String() != "{type: normal, Value: front, Parent: *ast.Root}" {
-		t.Errorf("1: not match header")
-	}
-	if o.Nodes[2].String() != "{type: italic, Parent: *ast.Root}" {
-		t.Errorf("2: not match header")
-	}
-	if o.Nodes[3].String() != "{type: normal, Value: italic, Parent: *ast.Italic}" {
-		t.Errorf("3: not match header")
-	}
-	if o.Nodes[4].String() != "{type: normal, Value: back, Parent: *ast.Normal}" {
-		t.Errorf("4: not match header")
+
+	for i, tt := range tests {
+		if o.Nodes[i].String() != tt.input {
+			t.Errorf("%d: not match header", i)
+		}
 	}
 }
 
@@ -123,16 +128,22 @@ func TestCommentNodes(t *testing.T) {
 			len(o.Nodes))
 	}
 
-	if o.Nodes[0].String() != "{type: root}" {
-		t.Errorf("0: not match header")
+	tests := []struct {
+		input string
+	}{
+		{"{type: root}"},
+		{"{type: normal, Value: normal, Parent: *ast.Root}"},
+		{"{type: comment, Parent: *ast.Root}"},
+		{"{type: normal, Value: *comment*, Parent: *ast.Comment}"},
 	}
-	if o.Nodes[1].String() != "{type: normal, Value: normal, Parent: *ast.Root}" {
-		t.Errorf("1: not match header")
+
+	for i, tt := range tests {
+		if o.Nodes[i].String() != tt.input {
+			t.Errorf("%d: not match header", i)
+		}
 	}
-	if o.Nodes[2].String() != "{type: comment, Parent: *ast.Root}" {
-		t.Errorf("2: not match header")
-	}
-	if o.Nodes[3].String() != "{type: normal, Value: *comment*, Parent: *ast.Comment}" {
-		t.Errorf("3: not match header")
-	}
+}
+
+func assertAst(t *testing.T, i int) {
+
 }
