@@ -89,7 +89,7 @@ func (p *Parser) parseNode(o *ast.Org, str string, parent ast.Node) {
 		p.parseNode(o, right, parent)
 	} else if str != "" {
 		// normal
-		normal := &ast.Normal{Value: str, Parent: o.Nodes[len(o.Nodes)-1]}
+		normal := &ast.Normal{Value: str, Parent: parent}
 		o.Nodes = append(o.Nodes, normal)
 	}
 }

@@ -5,11 +5,12 @@ import (
 )
 
 func TestNormalNodes(t *testing.T) {
-	input := `text`
+	input := `text1
+text2`
 	p := New(input)
 	o := p.ParseOrg()
 
-	if len(o.Nodes) != 2 {
+	if len(o.Nodes) != 3 {
 		t.Fatalf("program has not enough nodes. got=%d",
 			len(o.Nodes))
 	}
@@ -18,12 +19,13 @@ func TestNormalNodes(t *testing.T) {
 		input string
 	}{
 		{"{type: root}"},
-		{"{type: normal, Value: text, Parent: *ast.Root}"},
+		{"{type: normal, Value: text1, Parent: *ast.Root}"},
+		{"{type: normal, Value: text2, Parent: *ast.Root}"},
 	}
 
 	for i, tt := range tests {
 		if o.Nodes[i].String() != tt.input {
-			t.Errorf("%d: not match header", i)
+			t.Errorf("%d: not match header got=%q", i, o.Nodes[i].String())
 		}
 	}
 }
@@ -51,7 +53,7 @@ func TestHeaderNodes(t *testing.T) {
 
 	for i, tt := range tests {
 		if o.Nodes[i].String() != tt.input {
-			t.Errorf("%d: not match header", i)
+			t.Errorf("%d: not match header got=%q", i, o.Nodes[i].String())
 		}
 	}
 }
@@ -79,12 +81,12 @@ func TestBoldNodes(t *testing.T) {
 		{"{type: normal, Value: front, Parent: *ast.Root}"},
 		{"{type: bold, Parent: *ast.Root}"},
 		{"{type: normal, Value: bold, Parent: *ast.Bold}"},
-		{"{type: normal, Value: back, Parent: *ast.Normal}"},
+		{"{type: normal, Value: back, Parent: *ast.Root}"},
 	}
 
 	for i, tt := range tests {
 		if o.Nodes[i].String() != tt.input {
-			t.Errorf("%d: not match header", i)
+			t.Errorf("%d: not match header got=%q", i, o.Nodes[i].String())
 		}
 	}
 }
@@ -106,12 +108,12 @@ func TestItalicNodes(t *testing.T) {
 		{"{type: normal, Value: front, Parent: *ast.Root}"},
 		{"{type: italic, Parent: *ast.Root}"},
 		{"{type: normal, Value: italic, Parent: *ast.Italic}"},
-		{"{type: normal, Value: back, Parent: *ast.Normal}"},
+		{"{type: normal, Value: back, Parent: *ast.Root}"},
 	}
 
 	for i, tt := range tests {
 		if o.Nodes[i].String() != tt.input {
-			t.Errorf("%d: not match header", i)
+			t.Errorf("%d: not match header got=%q", i, o.Nodes[i].String())
 		}
 	}
 }
@@ -139,7 +141,7 @@ func TestCommentNodes(t *testing.T) {
 
 	for i, tt := range tests {
 		if o.Nodes[i].String() != tt.input {
-			t.Errorf("%d: not match header", i)
+			t.Errorf("%d: not match header got=%q", i, o.Nodes[i].String())
 		}
 	}
 }
