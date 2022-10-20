@@ -15,10 +15,10 @@ func TestNormalNodes(t *testing.T) {
 	}
 
 	// root
-	if o.Nodes[0].String() != "{type: normal, Value: root, Parent: <nil>}" {
+	if o.Nodes[0].String() != "{type: root}" {
 		t.Errorf("1: not match header. got=%q", o.Nodes[0].String())
 	}
-	if o.Nodes[1].String() != "{type: normal, Value: text, Parent: *ast.Normal}" {
+	if o.Nodes[1].String() != "{type: normal, Value: text, Parent: *ast.Root}" {
 		t.Errorf("1: not match header. got=%q", o.Nodes[0].String())
 	}
 }
@@ -34,7 +34,7 @@ func TestHeaderNodes(t *testing.T) {
 			len(o.Nodes))
 	}
 
-	if o.Nodes[0].String() != "{type: normal, Value: root, Parent: <nil>}" {
+	if o.Nodes[0].String() != "{type: root}" {
 		t.Errorf("0: not match header")
 	}
 	if o.Nodes[1].String() != "{type: header, Level: 1}" {
@@ -67,13 +67,13 @@ func TestBoldNodes(t *testing.T) {
 			len(o.Nodes))
 	}
 
-	if o.Nodes[0].String() != "{type: normal, Value: root, Parent: <nil>}" {
+	if o.Nodes[0].String() != "{type: root}" {
 		t.Errorf("0: not match header")
 	}
-	if o.Nodes[1].String() != "{type: normal, Value: front, Parent: *ast.Normal}" {
+	if o.Nodes[1].String() != "{type: normal, Value: front, Parent: *ast.Root}" {
 		t.Errorf("1: not match header")
 	}
-	if o.Nodes[2].String() != "{type: bold, Parent: *ast.Normal}" {
+	if o.Nodes[2].String() != "{type: bold, Parent: *ast.Root}" {
 		t.Errorf("2: not match header")
 	}
 	if o.Nodes[3].String() != "{type: normal, Value: bold, Parent: *ast.Bold}" {
@@ -94,13 +94,13 @@ func TestItalicNodes(t *testing.T) {
 			len(o.Nodes))
 	}
 
-	if o.Nodes[0].String() != "{type: normal, Value: root, Parent: <nil>}" {
+	if o.Nodes[0].String() != "{type: root}" {
 		t.Errorf("0: not match header")
 	}
-	if o.Nodes[1].String() != "{type: normal, Value: front, Parent: *ast.Normal}" {
+	if o.Nodes[1].String() != "{type: normal, Value: front, Parent: *ast.Root}" {
 		t.Errorf("1: not match header")
 	}
-	if o.Nodes[2].String() != "{type: italic, Parent: *ast.Normal}" {
+	if o.Nodes[2].String() != "{type: italic, Parent: *ast.Root}" {
 		t.Errorf("2: not match header")
 	}
 	if o.Nodes[3].String() != "{type: normal, Value: italic, Parent: *ast.Italic}" {
@@ -123,13 +123,13 @@ func TestCommentNodes(t *testing.T) {
 			len(o.Nodes))
 	}
 
-	if o.Nodes[0].String() != "{type: normal, Value: root, Parent: <nil>}" {
+	if o.Nodes[0].String() != "{type: root}" {
 		t.Errorf("0: not match header")
 	}
-	if o.Nodes[1].String() != "{type: normal, Value: normal, Parent: *ast.Normal}" {
+	if o.Nodes[1].String() != "{type: normal, Value: normal, Parent: *ast.Root}" {
 		t.Errorf("1: not match header")
 	}
-	if o.Nodes[2].String() != "{type: comment, Parent: *ast.Normal}" {
+	if o.Nodes[2].String() != "{type: comment, Parent: *ast.Root}" {
 		t.Errorf("2: not match header")
 	}
 	if o.Nodes[3].String() != "{type: normal, Value: *comment*, Parent: *ast.Comment}" {

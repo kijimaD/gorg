@@ -30,7 +30,7 @@ func New(input string) *Parser {
 func (p *Parser) ParseOrg() *ast.Org {
 	org := &ast.Org{}
 	org.Nodes = []ast.Node{}
-	org.Nodes = append(org.Nodes, &ast.Normal{Value: "root"})
+	org.Nodes = append(org.Nodes, &ast.Root{})
 
 	buf := bytes.NewBufferString(p.input)
 	scanner := bufio.NewScanner(buf)

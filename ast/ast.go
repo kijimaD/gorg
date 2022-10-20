@@ -24,6 +24,11 @@ func (o *Org) TokenLiteral() string {
 	}
 }
 
+type Root struct{}
+
+func (r *Root) TokenLiteral() string { return "" }
+func (r *Root) String() string       { return "{type: root}" }
+
 type Normal struct {
 	Token  token.Token
 	Value  string
