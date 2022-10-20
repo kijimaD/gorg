@@ -63,6 +63,18 @@ func (b *Bold) String() string {
 	return out.String()
 }
 
+type Italic struct {
+	Parent Node
+}
+
+func (i *Italic) TokenLiteral() string { return token.SLASH }
+func (i *Italic) String() string {
+	var out bytes.Buffer
+	text := fmt.Sprintf("{type: italic, Parent: %T}", i.Parent)
+	out.WriteString(text)
+	return out.String()
+}
+
 type Comment struct {
 	Parent Node
 }

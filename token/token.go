@@ -11,4 +11,5 @@ type Token struct {
 const (
 	ASTERISK    = "*"
 	NUMBER_SIGN = "#"
+	SLASH       = "/"
 )

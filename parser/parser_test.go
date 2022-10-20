@@ -84,6 +84,33 @@ func TestBoldNodes(t *testing.T) {
 	}
 }
 
+func TestItalicNodes(t *testing.T) {
+	input := `front/italic/back`
+	p := New(input)
+	o := p.ParseOrg()
+
+	if len(o.Nodes) != 5 {
+		t.Fatalf("program has not enough nodes. got=%d",
+			len(o.Nodes))
+	}
+
+	if o.Nodes[0].String() != "{type: normal, Value: root, Parent: <nil>}" {
+		t.Errorf("0: not match header")
+	}
+	if o.Nodes[1].String() != "{type: normal, Value: front, Parent: *ast.Normal}" {
+		t.Errorf("1: not match header")
+	}
+	if o.Nodes[2].String() != "{type: italic, Parent: *ast.Normal}" {
+		t.Errorf("2: not match header")
+	}
+	if o.Nodes[3].String() != "{type: normal, Value: italic, Parent: *ast.Italic}" {
+		t.Errorf("3: not match header")
+	}
+	if o.Nodes[4].String() != "{type: normal, Value: back, Parent: *ast.Normal}" {
+		t.Errorf("4: not match header")
+	}
+}
+
 func TestCommentNodes(t *testing.T) {
 	// コメント直下のノードは再帰パースせずnormalにする
 	input := `normal

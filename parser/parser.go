@@ -76,6 +76,17 @@ func (p *Parser) parseNode(o *ast.Org, str string, parent ast.Node) {
 		p.parseNode(o, center, bold)
 
 		p.parseNode(o, right, parent)
+	} else if len(p.matchInfixTag(str, token.SLASH)) > 0 {
+		// italic
+		left, center, right := p.parseInfixTag(str, token.SLASH)
+
+		p.parseNode(o, left, parent)
+
+		italic := &ast.Italic{Parent: parent}
+		o.Nodes = append(o.Nodes, italic)
+		p.parseNode(o, center, italic)
+
+		p.parseNode(o, right, parent)
 	} else if str != "" {
 		// normal
 		normal := &ast.Normal{Value: str, Parent: o.Nodes[len(o.Nodes)-1]}
