@@ -3,16 +3,14 @@ package parser
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"gorg/ast"
 	"regexp"
 )
 
 const (
-	HEADER1_REGEXP    = `^\* (.*)`
-	HEADER2_REGEXP    = `^\*\* (.*)`
-	BOLD_REGEXP       = `(.*)\*(.*)\*(.*)`
-	BOLD_LEFT_REGEXP  = `(.*)\*(.*)\*`
-	BOLD_RIGHT_REGEXP = `\*(.*)\*(.*)`
+	HEADER1_REGEXP = `^\* (.*)`
+	HEADER2_REGEXP = `^\*\* (.*)`
 )
 
 type Parser struct {
@@ -65,9 +63,9 @@ func (p *Parser) parseNode(o *ast.Org, str string, parent ast.Node) {
 
 		normal := &ast.Normal{Value: p.parseComment(str), Parent: comment}
 		o.Nodes = append(o.Nodes, normal)
-	} else if len(p.parseBold(str)) > 0 {
+	} else if len(p.parseTag(str, "*")) > 0 {
 		// bold
-		matches := p.parseBold(str)
+		matches := p.parseTag(str, "*")
 
 		var left string
 		var center string
@@ -80,11 +78,11 @@ func (p *Parser) parseNode(o *ast.Org, str string, parent ast.Node) {
 			left = ""
 			center = matches[1]
 			right = ""
-		} else if len(matches) == 3 && p.boldLeftMatch(str) && !p.boldRightMatch(str) {
+		} else if len(matches) == 3 && p.matchLeftTag(str, "*") && !p.matchRightTag(str, "*") {
 			left = matches[1]
 			center = matches[2]
 			right = ""
-		} else if len(matches) == 3 && !p.boldLeftMatch(str) && p.boldRightMatch(str) {
+		} else if len(matches) == 3 && !p.matchLeftTag(str, "*") && p.matchRightTag(str, "*") {
 			left = ""
 			center = matches[1]
 			right = matches[2]
@@ -119,18 +117,19 @@ func (p *Parser) parseHeader(s string, exp string) string {
 	return match
 }
 
-func (p *Parser) parseBold(s string) []string {
-	re := regexp.MustCompile(BOLD_REGEXP)
+// 中置関数は共通化できそう?
+func (p *Parser) parseTag(s string, tag string) []string {
+	re := regexp.MustCompile(fmt.Sprintf(`(.*)\%s(.*)\%s(.*)`, tag, tag))
 	matchs := re.FindStringSubmatch(s)
 	return matchs
 }
-func (p *Parser) boldLeftMatch(s string) bool {
-	re := regexp.MustCompile(BOLD_LEFT_REGEXP)
+func (p *Parser) matchLeftTag(s string, tag string) bool {
+	re := regexp.MustCompile(fmt.Sprintf(`(.*)\%s(.*)\%s`, tag, tag))
 	return re.MatchString(s)
 }
 
-func (p *Parser) boldRightMatch(s string) bool {
-	re := regexp.MustCompile(BOLD_RIGHT_REGEXP)
+func (p *Parser) matchRightTag(s string, tag string) bool {
+	re := regexp.MustCompile(fmt.Sprintf(`\%s(.*)\%s(.*)`, tag, tag))
 	return re.MatchString(s)
 }
 
